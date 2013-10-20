@@ -6,33 +6,23 @@
 void PtgScene::onInitialize () {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-
-    // Initialize the first level...
-    std::vector<Square> lvl0;
-    lvl0.push_back(Square(-50.0, -200.0, 100, 0.0));
-
-    // ...and insert it
-    squares.push_back(lvl0);
-
-    // Grow 8 levels
-    for (int i = 0; i < 8; i++) {
-        grow();
-    }
 }
 
 void PtgScene::onUpdate (float delta) {
+    fflush(stdout);
+    
     /* WASD for basic movement */
     if (isKeyPressed(KEY_W)) {
-        move(0, 50*delta);
+        move(0, 150*delta);
     }
     if (isKeyPressed(KEY_S)) {
-        move(0, -50*delta);
+        move(0, -150*delta);
     }
     if (isKeyPressed(KEY_D)) {
-        move(50*delta, 0);
+        move(150*delta, 0);
     }
     if (isKeyPressed(KEY_A)) {
-        move(-50*delta, 0);
+        move(-150*delta, 0);
     }
 
     /* RT for zooming */
@@ -44,90 +34,103 @@ void PtgScene::onUpdate (float delta) {
     }
 
     /* VB for angle change */
-    if (isKeyPressed(KEY_V) && angle > 0.3) {
-        angle -= 0.2 * delta;
-        regrow();
+    if (isKeyPressed(KEY_V)) {
+        _tree.rotate(-0.2 * delta);
+        _tree.regrow();
+        _selected.size(0);
     }
-    if (isKeyPressed(KEY_B) && angle < M_PI_2 - 0.3) {
-        angle += 0.2 * delta;
-        regrow();
+    if (isKeyPressed(KEY_B)) {
+        _tree.rotate(0.2 * delta);
+        _tree.regrow();
+        _selected.size(0);
     }
-}
 
-GLdouble interpolate (int lvl, int step, int color) {
-    int c = ((lvl/step - color*2) % 6 + 6) % 6;
-    int m = (lvl % step + step) % step;
-
-    switch (c) {
-        case 0: return 1.0;
-        case 1: return 1.0;
-        case 2: return (GLdouble) (step - m) / step;
-        case 3: return 0.0;
-        case 4: return 0.0;
-        case 5: return (GLdouble) m / step;
-    }
 }
 
 void PtgScene::onDraw () {
-    glClear(GL_COLOR_BUFFER_BIT);
+    _tree.draw();
 
-    int idxInit = 0;//floor(zoom() / 1);
-    int idxEnd = 20;//idxInit + 10;
-
-    for (int i = std::max(0, idxInit); i < idxEnd &&i < squares.size(); i++) {
-        const int step = 3;
-        GLdouble red = interpolate(i, step, 0);
-        GLdouble green = interpolate(i, step, 1);
-        GLdouble blue = interpolate(i, step, 2);
-        GLdouble alpha = 1.0;
-
-        glColor4d(red, green, blue, alpha);
-        for (std::vector<Square>::iterator lit = squares[i].begin(); lit != squares[i].end(); ++lit) {
-            lit->draw();
-        }
+    if (_selected.size() > 0) {
+        glColor3f(1, 1, 1);
+        _selected.draw();
     }
 }
 
 void PtgScene::onKeyDown (int code) {
     switch (code) {
+        /* FG for shrinking/growing */
         case KEY_F:
-            shrink();
+            _tree.shrink();
+            _selected.size(0);
             break;
 
         case KEY_G:
-            grow();
+            _tree.grow();
+            _selected.size(0);
             break;
+
+        /* 12 for color mode */
+        case KEY_1: {
+            _tree.colorMode(CM_RAINBOW);
+            break;
+        }
+
+        case KEY_2: {
+            _tree.colorMode(CM_TREE);
+            break;
+        }
+
+        /* 89 for angle mode */
+        case KEY_8: {
+            _tree.angleMode(AM_FIXED);
+            _tree.regrow();
+            _selected.size(0);
+            break;
+        }
+
+        case KEY_9: {
+            _tree.angleMode(AM_RANDOM);
+            _tree.regrow();
+            _selected.size(0);
+            break;
+        }
+
+        /* YU and HJ for cameras */
+        case KEY_Y: {
+            _camCols = std::max(1, _camCols-1);
+            configScreen(_camRows, _camCols);
+            break;
+        }
+        case KEY_U: {
+            _camCols = _camCols+1;
+            configScreen(_camRows, _camCols);
+            break;
+        }
+
+        case KEY_H: {
+            _camRows = std::max(1, _camRows-1);
+            configScreen(_camRows, _camCols);
+            break;
+        }
+        case KEY_J: {
+            _camRows = _camRows+1;
+            configScreen(_camRows, _camCols);
+            break;
+        }
     }
 }
 
-void PtgScene::grow () {
-    const int next = squares.size();
-    const int prev = next - 1;
+void PtgScene::onMouseDown (int button) {
+    Point2D wmp = getMouseWorldPosition();
 
-    std::vector<Square> level;
-    squares.push_back(level);
-
-    for (std::vector<Square>::iterator it = squares[prev].begin(); it != squares[prev].end(); ++it) {
-        std::pair<Square,Square> nexts = it->nextLevel(angle);
-        squares[next].push_back(nexts.first);
-        squares[next].push_back(nexts.second);
-    }
-}
-
-void PtgScene::shrink () {
-    if (squares.size() > 1) {
-        squares.pop_back();
-    }
-}
-
-void PtgScene::regrow () {
-    int size = squares.size();
-
-    while (squares.size() > 1) {
-        shrink();
-    }
-
-    while (squares.size() < size) {
-        grow();
+    switch (button) {
+        case MOUSE_RIGHT: {
+            _tree = PtgTree(wmp.x - 50, wmp.y - 50);
+            break;
+        }
+        case MOUSE_LEFT: {
+            _selected = _tree.getSmallestSquareAt(wmp);
+            break;
+        }
     }
 }

@@ -2,7 +2,8 @@
 #define __PTG_SCENE__H__
 
 #include "skel/skel.h"
-#include "Square.hpp"
+#include "PtgSquare.hpp"
+#include "PtgTree.hpp"
 
 #include <memory>
 #include <vector>
@@ -10,8 +11,9 @@
 
 class PtgScene : public Scene {
     private:
-        GLfloat angle;
-        std::vector<std::vector<Square> > squares;
+        PtgTree _tree;
+        int _camCols, _camRows;
+        PtgSquare _selected;
 
         void grow ();
         void shrink ();
@@ -22,9 +24,10 @@ class PtgScene : public Scene {
         void onUpdate (float delta);
         void onDraw ();
         void onKeyDown (int code);
+        void onMouseDown (int button);
 
     public:
-        PtgScene () : angle(M_PI_4) {}
+        PtgScene () : _camCols(1), _camRows(1), _selected(0, 0, 0, 0) {}
         virtual ~PtgScene () {}
 };
 
