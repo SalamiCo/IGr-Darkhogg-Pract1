@@ -19,7 +19,7 @@ COMPILER_FLAGS= -g
 INCLUDE= $(SDL_INC) $(OPENGL_INC)
 LIBS= $(SDL_LIB) $(OPENGL_LIB)
 
-EXEC= main
+EXEC= ptg-tree
 
 $(EXEC): $(OBJS)
 	$(MAKE) -C skel

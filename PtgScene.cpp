@@ -27,10 +27,10 @@ void PtgScene::onUpdate (float delta) {
 
     /* RT for zooming */
     if (isKeyPressed(KEY_R)) {
-        zoom(0.5*delta);
+        zoom(0.8*delta);
     }
     if (isKeyPressed(KEY_T)) {
-        zoom(-0.5*delta);
+        zoom(-0.8*delta);
     }
 
     /* VB for angle change */
@@ -58,6 +58,9 @@ void PtgScene::onDraw () {
 
 void PtgScene::onKeyDown (int code) {
     switch (code) {
+        case KEY_ESCAPE: 
+            quit();
+            break;
         /* FG for shrinking/growing */
         case KEY_F:
             _tree.shrink();
@@ -126,6 +129,7 @@ void PtgScene::onMouseDown (int button) {
     switch (button) {
         case MOUSE_RIGHT: {
             _tree = PtgTree(wmp.x - 50, wmp.y - 50);
+            _selected.size(0);
             break;
         }
         case MOUSE_LEFT: {

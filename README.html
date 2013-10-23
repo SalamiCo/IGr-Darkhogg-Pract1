@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>IGr.P1 - Daniel Escoz Solana</title>
+  </head>
+  <body>
+    <h1>
+    <a name="pr%C3%A1ctica-1---inform%C3%A1tica-gr%C3%A1fica" class="anchor" href="#pr%C3%A1ctica-1---inform%C3%A1tica-gr%C3%A1fica"><span class="octicon octicon-link"></span></a>Práctica 1 - Informática Gráfica</h1>
+
+    <p><strong>Autor:</strong> <em>Daniel Escoz Solana</em></p>
+
+    <h2>
+    <a name="compilaci%C3%B3n" class="anchor" href="#compilaci%C3%B3n"><span class="octicon octicon-link"></span></a>Compilación</h2>
+
+    <p>La práctica se ha probado usando GCC 4.6.1 en Ubuntu 11.10. Se requiere el
+    paquete <code>libsdl-dev</code> instalado en el equipo para su correcta compilación. La
+    compilación en cualquier otro entorno no se ha probado y podría fallar.</p>
+
+    <p>Abra un terminal en el directorio de la práctica y a continuación ejecute:</p>
+
+    <pre><code>make clean; make
+    </code></pre>
+
+    <p>Tras ello, ejecutar el programa recién generado:</p>
+
+    <pre><code>./ptg-tree
+    </code></pre>
+
+    <h2>
+    <a name="uso" class="anchor" href="#uso"><span class="octicon octicon-link"></span></a>Uso</h2>
+
+    <p>Controles mediante el ratón:</p>
+
+    <ul>
+    <li>
+    <em>Click Izquierdo</em>: Selecciona el cuadrado más pequeño en la posición del ratón</li>
+    <li>
+    <em>Click Derecho</em>: Regenera el árbol en la posición del ratón</li>
+    </ul><p>Controles mediante el teclado:</p>
+
+    <ul>
+    <li>
+    <code>W</code> <code>A</code> <code>S</code> <code>D</code>: mueve el área visible de la escena</li>
+    <li>
+    <code>R</code> <code>T</code>: Incremente/decrementa el zoom de la escena</li>
+    <li>
+    <code>F</code> <code>G</code>: Hace decrecer/crecer el árbol</li>
+    <li>
+    <code>V</code> <code>B</code>: Gira el árbol hacia la izquierda/derecha (sólo en modo fijo)</li>
+    <li>
+    <code>Y</code> <code>U</code>: Elimina/Añade columnas a la ventana (reestablece la cámara)</li>
+    <li>
+    <code>H</code> <code>J</code>: Elimina/Añade filas a la ventana (reestablece la cámara)</li>
+    <li>
+    <code>1</code> <code>2</code>: Establece el modo de color en <em>arco-iris</em> o <em>árbol</em>
+    </li>
+    <li>
+    <code>8</code> <code>9</code>: Establece el modo de ángulo en <em>fijo</em> o <em>aleatorio</em>
+    </li>
+    </ul><p>Cualquier modificación sobre el árbol deseleccionará el cuadrado seleccionado.
+    Todos los movimientos de cámara (translaciones y escalas) afectan a la cámara
+    sobre la que esté situado (o se hayasituado por última vez) el ratón.</p>
+  </body>
+</html>
